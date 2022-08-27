@@ -1,0 +1,13 @@
+@use '../GlobalStyles/scss/' as *;
+
+.wrapper {
+    @include flex(unset, unset);
+    flex-direction: column;
+    width: 100%;
+    max-height: min((100vh - 96px) - 60px, 734px);
+    padding-top: 8px;
+    background-color: $whiteColor;
+    border-radius: 8px;
+    box-shadow: 0px 2px 12px rgba($color: $blackColor, $alpha: 0.12);
+    overflow: hidden auto;
+}

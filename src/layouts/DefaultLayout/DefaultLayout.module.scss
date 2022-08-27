@@ -1,0 +1,16 @@
+@use '../../components/GlobalStyles/scss/' as *;
+.app {
+    width: 100%;
+    flex-direction: column;
+    @include flex(unset, center);
+}
+
+.wrapper {
+    @include flex(unset, unset);
+
+    margin-top: $heightHeader;
+
+    .content {
+        flex: 1;
+    }
+}

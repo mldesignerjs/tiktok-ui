@@ -1,0 +1,108 @@
+@use '../../../components/GlobalStyles/scss/' as *;
+$heightSearch: 46px;
+
+.search {
+    &-container {
+        position: relative;
+        width: 100%;
+    }
+
+    &-results,
+    &-form {
+        width: 361px;
+    }
+
+    &-form {
+        @include flex(space-between, center);
+        background-color: rgba($color: $darkColor, $alpha: 0.06);
+        border-radius: calc(2 * $heightSearch);
+        height: $heightSearch;
+        border: 1.5px solid transparent;
+
+        &:focus-within {
+            border-color: rgba($color: $darkColor, $alpha: 0.2);
+        }
+    }
+
+    &-input {
+        flex: 1;
+        height: 100%;
+        padding: 0 16px;
+        font-size: 1.6rem;
+        border: none;
+        background-color: transparent;
+        caret-color: $mainColor;
+
+        &:not(:placeholder-shown) ~ .btn-search-submit {
+            color: rgba($color: $darkColor, $alpha: 0.75);
+        }
+    }
+
+    &-title {
+        color: $subTextColor;
+        font-size: 1.4rem;
+        padding: 5px 12px;
+    }
+
+    .icon-action {
+        position: relative;
+        height: 100%;
+        color: rgba($color: $darkColor, $alpha: 0.34);
+
+        .reset-search-form {
+            @include flex(unset, center);
+            padding: 0 10px;
+            height: 100%;
+        }
+
+        .load-search-results {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 10px;
+            animation: spinner 0.7s linear infinite;
+        }
+    }
+
+    .btn-search-submit {
+        position: relative;
+        height: 100%;
+        padding: 0 16px;
+        font-size: 1.7rem;
+        color: rgba($color: $darkColor, $alpha: 0.34);
+        background-color: transparent;
+        border-top-right-radius: calc(2 * $heightSearch);
+        border-bottom-right-radius: calc(2 * $heightSearch);
+        border: none;
+        transition: 0.3s ease;
+
+        &:hover {
+            background-color: rgba($color: $darkColor, $alpha: 0.03);
+        }
+
+        &:active {
+            background-color: rgba($color: $darkColor, $alpha: 0.06);
+        }
+
+        &::after {
+            content: '';
+            width: 1px;
+            height: calc($heightSearch - 18px);
+            background-color: rgba($color: $darkColor, $alpha: 0.12);
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translate(-100%, -50%);
+        }
+    }
+}
+
+@keyframes spinner {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

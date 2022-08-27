@@ -1,0 +1,27 @@
+@use '../../../../components/GlobalStyles/scss/' as *;
+
+.main-nav-container {
+    margin-bottom: 1rem;
+
+    .nav-link {
+        text-align: left;
+        font-size: 1.8rem;
+        width: 100%;
+        @include flex(unset, center);
+        padding: 6px 8px;
+        font-weight: 600;
+        color: $darkColor;
+
+        & > * ~ * {
+            margin-left: 8px;
+        }
+
+        &.active {
+            color: $mainColor;
+        }
+
+        &:hover {
+            background-color: rgba($color: $darkColor, $alpha: 0.03);
+        }
+    }
+}

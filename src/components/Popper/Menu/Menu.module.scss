@@ -1,0 +1,50 @@
+@use '../../GlobalStyles/scss/' as *;
+
+.menu {
+    width: 100%;
+    .menu-list {
+        // padding-bottom: 0;
+        overflow: hidden auto;
+        .menu-item {
+            padding: 10px 15px;
+            text-align: left;
+            border-radius: 0;
+
+            &:hover {
+                background-color: rgba($color: $darkColor, $alpha: 0.03);
+            }
+
+            &.separate {
+                border-top: 1px solid rgba($color: $darkColor, $alpha: 0.12);
+            }
+        }
+    }
+}
+
+.header {
+    position: relative;
+    width: 100%;
+
+    &-title {
+        width: 100%;
+        min-width: 240px;
+        padding: 6px 8px;
+        line-height: 2;
+        text-align: center;
+        user-select: none;
+    }
+
+    .btn-back {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 50px;
+        height: 100%;
+        font-size: 1.6rem;
+        line-height: 1.5;
+        border: none;
+        border-radius: 0;
+        background-color: transparent;
+        cursor: pointer;
+    }
+}

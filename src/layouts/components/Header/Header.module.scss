@@ -1,0 +1,84 @@
+@use '../../../components/GlobalStyles/scss/' as *;
+
+.header {
+    height: $heightHeader;
+    box-shadow: 0 1px 1px rgba($color: $blackColor, $alpha: 0.12);
+    width: 100%;
+    background-color: $whiteColor;
+    position: fixed;
+    z-index: 999;
+
+    @include flex(space-between, center);
+
+    .wrapper {
+        @include flex(space-between, center);
+
+        .logo-link {
+            display: block;
+        }
+
+        .action {
+            font-size: 1.6rem;
+
+            @include flex(space-between, center);
+            gap: 16px;
+
+            .link-upload {
+                font-weight: 700;
+                color: $darkColor;
+            }
+
+            .icon {
+                font-size: 2rem;
+                background-color: transparent;
+                border: none;
+                color: $darkColor;
+
+                @include flex(center, center);
+            }
+
+            // .link-message {
+            // }
+
+            // .btn-inbox {
+            // }
+
+            .see-more-icon {
+                @include flex(center, center);
+                padding: 0 10px;
+                cursor: pointer;
+            }
+
+            .user-img {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+// Keyboad Shotcuts modal
+
+.shotcut {
+    &-title {
+        text-align: center;
+    }
+
+    &-content {
+        list-style-type: none;
+        margin-top: 16px;
+        border-top: 1px solid rgba($color: $darkColor, $alpha: 0.12);
+    }
+
+    &-item {
+        @include flex(space-between, center);
+        height: 40px;
+        border-bottom: 1px solid rgba($color: $darkColor, $alpha: 0.12);
+
+        .icon {
+            @include flex(center, center);
+        }
+    }
+}
