@@ -2,13 +2,14 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames/bind'
 import styles from './Video.module.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHeart, faPause, faPlay } from '@fortawesome/free-solid-svg-icons'
+import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons'
 import { useRef, useState, useEffect } from 'react'
 
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import RangeTrackSlider from '~/components/RangeTrackSlider'
 import RangeVolumeSlider from '../RangeVolumeSlider'
+import { AniHeartIcon, CommentIcon, HeartIcon, ShareIcon } from '../Icons'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -16,6 +17,11 @@ const cx = classNames.bind(styles)
 
 function Video({ data }) {
     const videoRef = useRef(null)
+
+    const heightVideo = styles.heightVideo
+
+    const [classSize, setClassSize] = useState(null)
+
     const [videoElement, setVideoElement] = useState(null)
 
     const [duration, setDuration] = useState(data.meta.playtime_seconds)
@@ -27,11 +33,17 @@ function Video({ data }) {
     const [currentTime, setCurrentTime] = useState('00:00')
     const [isPlaying, setIsPlaying] = useState(false)
 
-    const [ratioVideo, setRatioVideo] = useState(() => data.meta.video.resolution_x / data.meta.video.resolution_y)
+    const [ratioVideo, setRatioVideo] = useState()
+
+    // const [widthVideo, setWidthVideo] = useState(data.meta.video.resolution_x)
+    // const [heightVideo, setHeightVideo] = useState(data.meta.video.resolution_y)
 
     useEffect(() => {
+        const ratio = data.meta.video.resolution_x / data.meta.video.resolution_y
+        setRatioVideo(ratio)
+        setClassSize(ratio < 1 ? 'wrapper-height' : 'wrapper-width')
         setVideoElement(videoRef.current)
-    }, [])
+    }, [data])
 
     const togglePlay = () => {
         setIsPlaying(!isPlaying)
@@ -86,9 +98,16 @@ function Video({ data }) {
         setPercentDurationSlider(percent)
     }
 
+    const classes = cx('wrapper', {
+        [classSize]: classSize,
+    })
+
     return (
-        <div className={cx('wrapper')}>
-            <div className={cx('video-container')}>
+        <div className={classes}>
+            <div
+                className={cx('video-container')}
+                style={{ width: ratioVideo < 1 ? `calc(${heightVideo}*${ratioVideo})` : '' }}
+            >
                 <video ref={videoRef} loop onLoadedMetadata={handleLoadedVideo} onTimeUpdate={handleTimeUpdate}>
                     <source src={data.file_url} type="video/mp4" />
                 </video>
@@ -113,9 +132,25 @@ function Video({ data }) {
                 </div>
             </div>
             <div className={cx('action-container')}>
-                <button className={cx('btn-like')}>
-                    <FontAwesomeIcon icon={faHeart} />
+                <button className={cx('btn')}>
+                    <span className={cx('icon-wrapper')}>
+                        <HeartIcon />
+                    </span>
+                    <strong className={cx('counter')}>{data.likes_count}</strong>
                 </button>
+                <button className={cx('btn')}>
+                    <span className={cx('icon-wrapper')}>
+                        <CommentIcon />
+                    </span>
+                    <strong className={cx('counter')}>{data.comments_count}</strong>
+                </button>
+                <button className={cx('btn')}>
+                    <span className={cx('icon-wrapper')}>
+                        <ShareIcon />
+                    </span>
+                    <strong className={cx('counter')}>{data.shares_count}</strong>
+                </button>
+                <AniHeartIcon />
             </div>
         </div>
     )

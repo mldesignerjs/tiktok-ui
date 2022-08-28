@@ -14,7 +14,7 @@ const cx = classNames.bind(styles)
 function Item({ data }) {
     return (
         <div className={cx('wrapper')}>
-            <Link to={`/@${data.user.nickname}`}>
+            <Link to={`/@${data.user.nickname}`} className={cx('avatar')}>
                 <Avatar src={data.user.avatar} alt={data.user.nickname} size={56} />
             </Link>
             <div className={cx('container')}>
