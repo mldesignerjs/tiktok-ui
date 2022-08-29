@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames/bind'
 import styles from './Modal.module.scss'
 import { CloseModalIcon } from '../Icons'
+import Portal from '../Portal'
 const cx = classNames.bind(styles)
 
 function Modal({ children, className, onCloseModal }) {
@@ -15,9 +16,11 @@ function Modal({ children, className, onCloseModal }) {
     })
 
     return (
-        <div className={classes} onClick={handleClose}>
-            {children}
-        </div>
+        <Portal>
+            <div className={classes} onClick={handleClose}>
+                {children}
+            </div>
+        </Portal>
     )
 }
 

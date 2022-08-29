@@ -12,6 +12,7 @@ function RangeVolumeSlider({ percent, onValueChange, onMuted }) {
     useEffect(() => {
         setMarginLeft(-(percent / 100) * 12 + 6)
     }, [percent])
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('icon')} onClick={onMuted}>

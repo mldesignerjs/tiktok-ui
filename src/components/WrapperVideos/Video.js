@@ -5,23 +5,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons'
 import { useRef, useState, useEffect } from 'react'
 
-import gsap from 'gsap'
-import ScrollTrigger from 'gsap/ScrollTrigger'
 import RangeTrackSlider from '~/components/RangeTrackSlider'
 import RangeVolumeSlider from '../RangeVolumeSlider'
-import { AniHeartIcon, CommentIcon, HeartIcon, ShareIcon } from '../Icons'
-
-gsap.registerPlugin(ScrollTrigger)
+import { CommentIcon, HeartIcon, ShareIcon } from '../Icons'
+import { useCallback } from 'react'
+import { useElementOnScreen } from '~/hooks'
+import Image from '../Image'
 
 const cx = classNames.bind(styles)
 
 function Video({ data }) {
+    const wrapperRef = useRef(null)
     const videoRef = useRef(null)
 
-    const heightVideo = styles.heightVideo
+    const sizeVideo = styles.sizeVideo
 
     const [classSize, setClassSize] = useState(null)
 
+    const [wrapperElement, setWrapperElement] = useState(null)
     const [videoElement, setVideoElement] = useState(null)
 
     const [duration, setDuration] = useState(data.meta.playtime_seconds)
@@ -35,19 +36,33 @@ function Video({ data }) {
 
     const [ratioVideo, setRatioVideo] = useState()
 
-    // const [widthVideo, setWidthVideo] = useState(data.meta.video.resolution_x)
-    // const [heightVideo, setHeightVideo] = useState(data.meta.video.resolution_y)
+    const options = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.8,
+    }
 
-    useEffect(() => {
-        const ratio = data.meta.video.resolution_x / data.meta.video.resolution_y
-        setRatioVideo(ratio)
-        setClassSize(ratio < 1 ? 'wrapper-height' : 'wrapper-width')
-        setVideoElement(videoRef.current)
-    }, [data])
+    const isVisibile = useElementOnScreen(options, wrapperRef)
+
+    // const [widthVideo, setWidthVideo] = useState(data.meta.video.resolution_x)
+    // const [size, setHeightVideo] = useState(data.meta.video.resolution_y)
+
+    const play = () => {
+        if (videoElement) videoElement.play()
+        setIsPlaying(true)
+    }
+
+    const pause = () => {
+        if (videoElement) videoElement.pause()
+        setIsPlaying(false)
+    }
 
     const togglePlay = () => {
-        setIsPlaying(!isPlaying)
-        videoRef.current.paused ? videoRef.current.play() : videoRef.current.pause()
+        if (isPlaying) {
+            pause()
+        } else {
+            play()
+        }
     }
 
     const handleBtnPlay = () => {
@@ -67,15 +82,21 @@ function Video({ data }) {
         videoElement.volume = currentVolume / 100
     }
 
-    const handleMuted = () => {
-        if (videoElement.muted) {
-            setPercentVolumeSlider(lastPercentVolumeSlider)
-        } else {
-            setLastPercentVolumeSlider(videoElement.volume * 100)
-            setPercentVolumeSlider(0)
+    const handleMuted = useCallback(() => {
+        if (videoElement) {
+            if (videoElement.muted) {
+                setPercentVolumeSlider(lastPercentVolumeSlider)
+            } else {
+                setLastPercentVolumeSlider(videoElement.volume * 100)
+                setPercentVolumeSlider(0)
+            }
+
+            videoElement.muted = !videoElement.muted
+
+            return videoElement.muted
         }
-        videoElement.muted = !videoElement.muted
-    }
+        return null
+    }, [lastPercentVolumeSlider, videoElement])
 
     const handleLoadedVideo = () => {
         const duraM = Math.floor(videoElement.duration / 60)
@@ -102,15 +123,85 @@ function Video({ data }) {
         [classSize]: classSize,
     })
 
+    useEffect(() => {
+        const ratio = data.meta.video.resolution_x / data.meta.video.resolution_y
+        setRatioVideo(ratio)
+        setClassSize(ratio < 1 ? 'wrapper-height' : 'wrapper-width')
+        setWrapperElement(wrapperRef.current)
+        setVideoElement(videoRef.current)
+    }, [data, isVisibile])
+
+    useEffect(() => {
+        const handKeyDown = (e) => {
+            if (e.keyCode === 77) {
+                handleMuted()
+            }
+        }
+        const handleFocusWindow = () => {
+            play()
+        }
+
+        const handleBlurWindow = () => {
+            pause()
+        }
+
+        window.addEventListener('focus', handleFocusWindow)
+
+        window.addEventListener('blur', handleBlurWindow)
+
+        document.addEventListener('keydown', handKeyDown)
+
+        return () => {
+            document.removeEventListener('keydown', handKeyDown)
+
+            window.removeEventListener('focus', handleFocusWindow)
+
+            window.removeEventListener('blur', handleBlurWindow)
+        }
+    }, [handleMuted])
+
+    useEffect(() => {
+        if (wrapperElement)
+            if (videoElement) {
+                if (isVisibile) {
+                    if (!isPlaying) {
+                        play()
+                    }
+                } else {
+                    if (isPlaying) {
+                        pause()
+                    }
+                }
+            }
+    }, [isVisibile])
+
     return (
-        <div className={classes}>
+        <div className={classes} ref={wrapperRef}>
             <div
                 className={cx('video-container')}
-                style={{ width: ratioVideo < 1 ? `calc(${heightVideo}*${ratioVideo})` : '' }}
+                style={{
+                    width: ratioVideo < 1 ? `calc(${sizeVideo}*${ratioVideo})` : '',
+                    height: ratioVideo > 1 ? `calc(${sizeVideo}/${ratioVideo})` : '',
+                }}
             >
-                <video ref={videoRef} loop onLoadedMetadata={handleLoadedVideo} onTimeUpdate={handleTimeUpdate}>
-                    <source src={data.file_url} type="video/mp4" />
-                </video>
+                <div className={cx('container')}>
+                    <Image src={data.thumb_url} />
+                    {isVisibile && (
+                        <div className={cx('player')}>
+                            <video
+                                ref={videoRef}
+                                playsInline={true}
+                                autoPlay
+                                loop
+                                onLoadedMetadata={handleLoadedVideo}
+                                onTimeUpdate={handleTimeUpdate}
+                            >
+                                <source src={data.file_url} type="video/mp4" />
+                            </video>
+                        </div>
+                    )}
+                </div>
+
                 <div className={cx('controls')}>
                     <button className={cx('btn-play')} onClick={handleBtnPlay}>
                         <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
@@ -150,7 +241,6 @@ function Video({ data }) {
                     </span>
                     <strong className={cx('counter')}>{data.shares_count}</strong>
                 </button>
-                <AniHeartIcon />
             </div>
         </div>
     )

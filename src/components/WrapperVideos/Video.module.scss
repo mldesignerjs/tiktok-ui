@@ -1,46 +1,47 @@
 @use '../GlobalStyles/scss/' as *;
 
-$heightVideo: calc(450px + (200vw - 768px) / 1152 * 100);
+$sizeVideo: 504px;
 :export {
-    heightVideo: $heightVideo;
+    sizeVideo: $sizeVideo;
 }
 
 .wrapper {
     @include flex(unset, flex-end);
     gap: 20px;
     &-height {
-        height: calc(450px + (200vw - 768px) / 1152 * 100);
-
+        height: $sizeVideo;
         .video-container {
             height: 100%;
-
-            video {
-                height: 100%;
-                width: auto;
-            }
         }
     }
 
     &-width {
-        width: calc(450px + ((100vw - 768px) / 1152) * 100);
-
         .video-container {
-            width: 100%;
-
-            video {
-                width: 100%;
-                height: auto;
-            }
+            width: $sizeVideo;
+            // width: 100%;
         }
     }
 
     .video-container {
-        // height: 100%;
-        // width: 100%;
         border-radius: 8px;
         position: relative;
         overflow: hidden;
         cursor: pointer;
+
+        .container {
+            width: 100%;
+            position: relative;
+
+            .player {
+                position: absolute;
+                top: 0;
+                left: 0;
+
+                video {
+                    width: 100%;
+                }
+            }
+        }
 
         &:hover {
             .controls {

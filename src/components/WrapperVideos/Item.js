@@ -1,17 +1,26 @@
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
+import Linkify from 'linkify-react'
+import 'linkify-plugin-hashtag'
+
 import classNames from 'classnames/bind'
 
-import Avatar from '../Avatar'
-import { MusicIcon } from '../Icons'
-import Button from '../Button'
+import Avatar from '~/components/Avatar'
+import { MusicIcon } from '~/components/Icons'
+import Button from '~/components/Button'
 import styles from './WrapperVideos.module.scss'
 import Video from './Video'
 
 const cx = classNames.bind(styles)
 
 function Item({ data }) {
+    const options = {
+        formatHref: {
+            hashtag: (href) => '/hashtag/' + href.substr(1),
+        },
+    }
+
     return (
         <div className={cx('wrapper')}>
             <Link to={`/@${data.user.nickname}`} className={cx('avatar')}>
@@ -29,13 +38,9 @@ function Item({ data }) {
                             {/* .<span className={cx('time')}>{data.published_at}</span> */}
                         </Link>
                         <div className={cx('content')}>
-                            <span className={cx('text')}>{data.description}</span>
-                            {/* <Link to="/hasktag/thaygiaongaohoa">
-                                <strong>#thaygiaongaohoa</strong>
-                            </Link>
-                            <Link to="/hasktag/learnOnTikTok">
-                                <strong>#LearnOnTikTok</strong>
-                            </Link> */}
+                            <Linkify options={options} tagName="span">
+                                {data.description}
+                            </Linkify>
                         </div>
                         <h4 className={cx('video-music')}>
                             <Link to="/music/nhac-nen">

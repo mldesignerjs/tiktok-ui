@@ -49,14 +49,19 @@
                         }
                     }
                     .content {
-                        .text {
-                            font-weight: 400;
+                        font-weight: 400;
+
+                        span {
+                            a {
+                                font-weight: 600;
+                            }
                         }
                     }
 
                     .video-music {
                         margin-top: 4px;
                         margin-bottom: 12px;
+
                         a {
                             @include flex(unset, center);
                             gap: 8px;
