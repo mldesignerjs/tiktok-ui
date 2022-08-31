@@ -2,35 +2,34 @@ import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames/bind'
 import styles from './RangeVolumeSlider.module.scss'
-import { VolumeIcon, VolumeOffIcon } from '../Icons'
+import { useVolumeStore } from '~/context'
+import { VolumeIcon, VolumeOffIcon } from '~/components/Icons'
 
 const cx = classNames.bind(styles)
 
-function RangeVolumeSlider({ percent, onValueChange, onMuted }) {
-    const [marginLeft, setMarginLeft] = useState(percent)
+function RangeVolumeSlider({ onValueChange, onMuted }) {
+    const [state] = useVolumeStore()
+
+    const { muted, volume } = state
+
+    const [marginLeft, setMarginLeft] = useState(volume)
 
     useEffect(() => {
-        setMarginLeft(-(percent / 100) * 12 + 6)
-    }, [percent])
+        setMarginLeft(-(volume / 100) * 12 + 6)
+    }, [volume])
 
     return (
         <div className={cx('wrapper')}>
             <div className={cx('icon')} onClick={onMuted}>
-                {percent === 0 ? <VolumeOffIcon /> : <VolumeIcon />}
+                {muted ? <VolumeOffIcon /> : <VolumeIcon />}
             </div>
             <div className={cx('progress')}>
-                <div style={{ width: `${percent}%` }} className={cx('progress_bar')}></div>
+                <div style={{ width: `${volume}%` }} className={cx('progress_bar')}></div>
                 <div
-                    style={{ left: `${percent}%`, marginLeft: `${marginLeft}px` }}
+                    style={{ left: `${volume}%`, marginLeft: `${marginLeft}px` }}
                     className={cx('progress_circle')}
                 ></div>
-                <input
-                    defaultValue={100}
-                    type="range"
-                    name=""
-                    className={cx('range')}
-                    onChange={(e) => onValueChange(e)}
-                />
+                <input defaultValue={100} type="range" name="" className={cx('range')} onChange={onValueChange} />
             </div>
         </div>
     )

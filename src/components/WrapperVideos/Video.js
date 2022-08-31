@@ -11,11 +11,17 @@ import { CommentIcon, HeartIcon, ShareIcon } from '../Icons'
 import { useCallback } from 'react'
 import { useElementOnScreen } from '~/hooks'
 import Image from '../Image'
+import { actions, useVolumeStore } from '~/context'
 
 const cx = classNames.bind(styles)
 
 function Video({ data }) {
+    const [state, dispatch] = useVolumeStore()
+
+    const { muted, volume, prevVolume } = state
+
     const wrapperRef = useRef(null)
+
     const videoRef = useRef(null)
 
     const sizeVideo = styles.sizeVideo
@@ -28,8 +34,6 @@ function Video({ data }) {
     const [duration, setDuration] = useState(data.meta.playtime_seconds)
 
     const [percentDurationSlider, setPercentDurationSlider] = useState(0)
-    const [percentVolumeSlider, setPercentVolumeSlider] = useState(100)
-    const [lastPercentVolumeSlider, setLastPercentVolumeSlider] = useState(0)
     const [timeDuration, setTimeDuration] = useState(data.meta.playtime_strings)
     const [currentTime, setCurrentTime] = useState('00:00')
     const [isPlaying, setIsPlaying] = useState(false)
@@ -47,15 +51,17 @@ function Video({ data }) {
     // const [widthVideo, setWidthVideo] = useState(data.meta.video.resolution_x)
     // const [size, setHeightVideo] = useState(data.meta.video.resolution_y)
 
-    const play = () => {
-        if (videoElement) videoElement.play()
+    const play = useCallback(() => {
+        if (videoElement) {
+            videoElement.play()
+        }
         setIsPlaying(true)
-    }
+    }, [videoElement])
 
-    const pause = () => {
+    const pause = useCallback(() => {
         if (videoElement) videoElement.pause()
         setIsPlaying(false)
-    }
+    }, [videoElement])
 
     const togglePlay = () => {
         if (isPlaying) {
@@ -74,29 +80,6 @@ function Video({ data }) {
         videoElement.currentTime = (percent * videoElement.duration) / 100
         setPercentDurationSlider(e.target.value)
     }
-
-    const handleValueVolumeChange = (e) => {
-        const currentVolume = parseInt(e.target.value)
-        if (currentVolume > 0) videoElement.muted = false
-        setPercentVolumeSlider(() => currentVolume)
-        videoElement.volume = currentVolume / 100
-    }
-
-    const handleMuted = useCallback(() => {
-        if (videoElement) {
-            if (videoElement.muted) {
-                setPercentVolumeSlider(lastPercentVolumeSlider)
-            } else {
-                setLastPercentVolumeSlider(videoElement.volume * 100)
-                setPercentVolumeSlider(0)
-            }
-
-            videoElement.muted = !videoElement.muted
-
-            return videoElement.muted
-        }
-        return null
-    }, [lastPercentVolumeSlider, videoElement])
 
     const handleLoadedVideo = () => {
         const duraM = Math.floor(videoElement.duration / 60)
@@ -119,9 +102,42 @@ function Video({ data }) {
         setPercentDurationSlider(percent)
     }
 
+    const handleValueVolumeChange = (e) => {
+        const currentVolume = parseInt(e.target.value)
+        if (currentVolume === 0) {
+            dispatch(actions.turnOffVolume())
+        } else {
+            dispatch(actions.turnOnVolume())
+        }
+        dispatch(actions.setVolume(currentVolume))
+
+        // videoElement.volume = currentVolume / 100
+    }
+    const handleMuted = useCallback(() => {
+        if (muted) {
+            if (prevVolume === 0) {
+                const defaultVolume = 90
+                dispatch(actions.setVolume(defaultVolume))
+            } else {
+                dispatch(actions.turnOnVolume())
+            }
+        } else {
+            dispatch(actions.turnOffVolume())
+        }
+
+        return muted
+    }, [prevVolume, muted, dispatch])
+
     const classes = cx('wrapper', {
         [classSize]: classSize,
     })
+
+    useEffect(() => {
+        if (videoElement) {
+            videoElement.volume = volume / 100
+            videoElement.muted = muted
+        }
+    }, [volume, muted, videoElement])
 
     useEffect(() => {
         const ratio = data.meta.video.resolution_x / data.meta.video.resolution_y
@@ -137,6 +153,7 @@ function Video({ data }) {
                 handleMuted()
             }
         }
+
         const handleFocusWindow = () => {
             play()
         }
@@ -173,7 +190,7 @@ function Video({ data }) {
                     }
                 }
             }
-    }, [isVisibile])
+    }, [isVisibile, wrapperElement, videoElement])
 
     return (
         <div className={classes} ref={wrapperRef}>
@@ -192,6 +209,7 @@ function Video({ data }) {
                                 ref={videoRef}
                                 playsInline={true}
                                 autoPlay
+                                muted={muted}
                                 loop
                                 onLoadedMetadata={handleLoadedVideo}
                                 onTimeUpdate={handleTimeUpdate}
@@ -207,11 +225,7 @@ function Video({ data }) {
                         <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
                     </button>
                     <div className={cx('volume')}>
-                        <RangeVolumeSlider
-                            percent={percentVolumeSlider}
-                            onValueChange={handleValueVolumeChange}
-                            onMuted={handleMuted}
-                        />
+                        <RangeVolumeSlider onValueChange={handleValueVolumeChange} onMuted={handleMuted} />
                     </div>
 
                     <div className={cx('duration')}>

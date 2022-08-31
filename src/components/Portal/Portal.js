@@ -1,20 +1,24 @@
 import { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 
-function Portal({ children }) {
+function Portal({ children, containerId }) {
     const [wrapper, setWrapper] = useState(null)
 
     useEffect(() => {
-        const portal = document.createElement('div')
+        let container = document.querySelector(`#${containerId}`)
 
-        document.body.appendChild(portal)
+        if (!container) {
+            container = document.createElement('div')
+            container.id = containerId
+            document.body.appendChild(container)
+        }
 
-        setWrapper(portal)
+        setWrapper(container)
 
         return () => {
-            document.body.removeChild(portal)
+            if (!containerId) document.body.removeChild(container)
         }
-    }, [])
+    }, [containerId])
 
     if (!wrapper) return null
 
