@@ -2,18 +2,14 @@ import PropTypes from 'prop-types'
 import Header from '~/layouts/components/Header'
 import Sidebar from '~/layouts/components/Sidebar'
 
-import classNames from 'classnames/bind'
-import styles from './DefaultLayout.module.scss'
-const cx = classNames.bind(styles)
-
 function DefaultLayout({ children }) {
     return (
-        <div className={cx('app')}>
+        <div className="page">
             <Header />
             <div className="container">
-                <div className={cx('wrapper')}>
+                <div className="wrapper-page">
                     <Sidebar />
-                    <div className={cx('content')}>{children}</div>
+                    <div className="content-page">{children}</div>
                 </div>
             </div>
         </div>

@@ -1,6 +1,6 @@
 @use '../GlobalStyles/scss/' as *;
 
-$sizeVideo: 504px;
+$sizeVideo: calc(450px + ((100vw - 768px) / 1152) * 100);
 :export {
     sizeVideo: $sizeVideo;
 }

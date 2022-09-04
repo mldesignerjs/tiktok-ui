@@ -96,7 +96,7 @@ const keyboardShotcuts = [
 function Header() {
     const [showModal, setShowModal] = useState(false)
 
-    const currentUser = true
+    const currentUser = false
 
     const handleMenuChange = (menuItem) => {
         switch (menuItem.type) {

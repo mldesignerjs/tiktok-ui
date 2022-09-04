@@ -1,8 +1,22 @@
 @use '../GlobalStyles/scss/' as *;
 
 .wrapperVideos {
-    @include flex(unset, flex-end);
+    @include flex(unset, center);
     flex-direction: column;
+
+    .wrapperrr {
+        width: 100%;
+    }
+
+    .wrapper-container {
+        @include flex(unset, flex-end);
+        flex-direction: column;
+    }
+
+    .loading-icon {
+        width: 100%;
+        @include flex(center, unset);
+    }
 
     .wrapper {
         @include flex(unset, unset);
@@ -50,6 +64,7 @@
                     }
                     .content {
                         font-weight: 400;
+                        margin-right: 80px;
 
                         span {
                             a {

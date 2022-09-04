@@ -25,6 +25,11 @@ const f8Api = {
         const url = 'videos'
         return axiosClient.get(url, params)
     },
+
+    getAnUser: (nickname) => {
+        const url = 'users/@' + nickname
+        return axiosClient.get(url)
+    },
 }
 
 export default f8Api

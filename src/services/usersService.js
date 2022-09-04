@@ -26,3 +26,12 @@ export const getFollowingsList = async (page) => {
         console.log(error)
     }
 }
+
+export const getUser = async (nickname) => {
+    try {
+        const res = await f8Api.getAnUser(nickname)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}

@@ -61,6 +61,31 @@ body {
     padding-right: 1.6rem;
 }
 
+.page {
+    width: 100%;
+    flex-direction: column;
+    @include flex(unset, center);
+
+    &.no-sidebar {
+        .wrapper-page {
+            .content-page {
+                margin: 0;
+            }
+        }
+    }
+
+    .wrapper-page {
+        @include flex(unset, unset);
+
+        margin-top: $heightHeader;
+
+        .content-page {
+            flex: 1;
+            margin-left: $widthSidebar;
+        }
+    }
+}
+
 a {
     color: $darkColor;
     text-decoration: none;

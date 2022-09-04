@@ -9,13 +9,12 @@ import RangeTrackSlider from '~/components/RangeTrackSlider'
 import RangeVolumeSlider from '../RangeVolumeSlider'
 import { CommentIcon, HeartIcon, ShareIcon } from '../Icons'
 import { useCallback } from 'react'
-import { useElementOnScreen } from '~/hooks'
 import Image from '../Image'
 import { actions, useVolumeStore } from '~/context'
 
 const cx = classNames.bind(styles)
 
-function Video({ data }) {
+function Video({ data, isVisibile }) {
     const [state, dispatch] = useVolumeStore()
 
     const { muted, volume, prevVolume } = state
@@ -39,14 +38,6 @@ function Video({ data }) {
     const [isPlaying, setIsPlaying] = useState(false)
 
     const [ratioVideo, setRatioVideo] = useState()
-
-    const options = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.8,
-    }
-
-    const isVisibile = useElementOnScreen(options, wrapperRef)
 
     // const [widthVideo, setWidthVideo] = useState(data.meta.video.resolution_x)
     // const [size, setHeightVideo] = useState(data.meta.video.resolution_y)

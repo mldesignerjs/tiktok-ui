@@ -1,14 +1,16 @@
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
 import Header from '~/layouts/components/Header'
 
 function HeaderOnly({ children }) {
     return (
-        <>
+        <div className="page full-width no-sidebar">
             <Header />
-            <div className="container">
-                <div className="content">{children}</div>
+            <div className="container-fluid">
+                <div className="wrapper-page">
+                    <div className="content-page">{children}</div>
+                </div>
             </div>
-        </>
+        </div>
     )
 }
 

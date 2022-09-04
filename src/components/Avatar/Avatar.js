@@ -16,7 +16,7 @@ const Avatar = forwardRef(({ src, alt, size = 32 }, ref) => {
 })
 
 Avatar.propTypes = {
-    src: PropTypes.string.isRequired,
+    src: PropTypes.string,
     alt: PropTypes.string,
     size: PropTypes.number,
 }
