@@ -24,8 +24,10 @@
             gap: 16px;
 
             .link-upload {
-                font-weight: 700;
+                font-weight: 600;
                 color: $darkColor;
+                border: 1px solid $borderColor;
+                border-radius: 0;
             }
 
             .icon {
@@ -62,6 +64,7 @@
 // Keyboad Shotcuts modal
 
 .shotcut {
+    padding: 0 32px 40px;
     &-title {
         text-align: center;
     }

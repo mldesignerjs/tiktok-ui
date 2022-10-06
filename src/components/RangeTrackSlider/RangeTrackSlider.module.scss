@@ -15,8 +15,7 @@
         }
     }
 
-    &::after {
-        content: '';
+    &_bg {
         width: 100%;
         height: 2px;
         background-color: rgba($color: $whiteColor, $alpha: 0.3);
@@ -36,25 +35,25 @@
         cursor: pointer;
         opacity: 0;
     }
-}
 
-.progress_bar {
-    width: 100%;
-    height: 2px;
-    background-color: $whiteColor;
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-}
+    .progress_bar {
+        width: 100%;
+        height: 2px;
+        background-color: $whiteColor;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+    }
 
-.progress_circle {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    background-color: $whiteColor;
-    border-radius: 50%;
-    top: 50%;
-    transform: translate(-6px, -50%);
-    opacity: 0;
+    .progress_circle {
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        background-color: $whiteColor;
+        border-radius: 50%;
+        top: 50%;
+        transform: translate(-6px, -50%);
+        opacity: 0;
+    }
 }

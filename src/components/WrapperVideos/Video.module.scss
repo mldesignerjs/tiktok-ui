@@ -36,6 +36,7 @@ $sizeVideo: calc(450px + ((100vw - 768px) / 1152) * 100);
                 position: absolute;
                 top: 0;
                 left: 0;
+                width: 100%;
 
                 video {
                     width: 100%;
@@ -44,16 +45,14 @@ $sizeVideo: calc(450px + ((100vw - 768px) / 1152) * 100);
         }
 
         &:hover {
-            .controls {
-                .btn-play {
-                    opacity: 1;
-                }
-                .volume {
-                    opacity: 1;
-                }
-                .duration {
-                    opacity: 1;
-                }
+            .btn-play {
+                opacity: 1;
+            }
+            .volume {
+                opacity: 1;
+            }
+            .duration {
+                opacity: 1;
             }
         }
 
@@ -68,36 +67,44 @@ $sizeVideo: calc(450px + ((100vw - 768px) / 1152) * 100);
             bottom: 0;
             left: 0;
             padding: 10px 12px;
+        }
 
-            .btn-play {
-                width: 40px;
-                height: 40px;
-                padding: 10px;
-                background-color: transparent;
-                border: none;
+        .control {
+            position: absolute;
+        }
+
+        .btn-play {
+            width: 40px;
+            height: 40px;
+            padding: 10px;
+            left: 12px;
+            bottom: 26px;
+            background-color: transparent;
+            border: none;
+            color: $whiteColor;
+            font-size: 2rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .volume {
+            position: absolute;
+            bottom: 26px;
+            right: 12px;
+        }
+
+        .duration {
+            @include flex(unset, center);
+            gap: 15px;
+            bottom: 12px;
+            padding-inline: 12px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            width: 100%;
+
+            .time {
                 color: $whiteColor;
-                font-size: 2rem;
-                opacity: 0;
-                transition: all 0.3s ease;
-            }
-
-            .volume {
-                position: absolute;
-                bottom: 26px;
-                right: 12px;
-            }
-
-            .duration {
-                @include flex(unset, center);
-                gap: 15px;
-
-                opacity: 0;
-                transition: all 0.3s ease;
-
-                .time {
-                    color: $whiteColor;
-                    font-size: 1rem;
-                }
+                font-size: 1rem;
             }
         }
     }

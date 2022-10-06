@@ -1,0 +1,80 @@
+@use '../GlobalStyles/scss/' as *;
+
+.wrapper {
+    text-align: center;
+    user-select: none;
+    padding-top: 48px;
+
+    .scroll {
+        height: 500px;
+        width: 100%;
+        overflow-y: auto;
+        .container {
+            width: 375px;
+            margin: auto;
+            position: relative;
+            height: 100%;
+        }
+    }
+
+    .header {
+        font-weight: 3.2rem;
+        font-weight: 700;
+        padding: 16px 0;
+    }
+
+    .list {
+        // padding: 0 50px;
+
+        .item {
+            .btn-chanel {
+                width: 100%;
+                @include flex(center, center);
+                position: relative;
+                padding: 0 12px;
+                border: 1px solid $borderColor;
+                height: 44px;
+                margin-bottom: 16px;
+
+                .icon {
+                    @include flex(center, center);
+                    position: absolute;
+                    // top: 0;
+                    left: 12px;
+                }
+
+                strong {
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+
+    .policy-confirm {
+        font-size: 1.2rem;
+        line-height: 1.5rem;
+        color: rgba($color: $darkColor, $alpha: 0.5);
+        position: absolute;
+        bottom: 10px;
+
+        a {
+            color: $darkColor;
+        }
+    }
+
+    .footer {
+        padding: 20px 0;
+        border-top: 1px solid $borderColor;
+        p {
+            span {
+                cursor: pointer;
+                color: $mainColor;
+                font-weight: 600;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}

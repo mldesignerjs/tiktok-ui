@@ -39,6 +39,10 @@ body {
     line-height: 1.5;
     text-rendering: optimizeSpeed;
     overflow-y: overlay;
+
+    &.hidden {
+        overflow: hidden;
+    }
 }
 
 .container-fluid {
@@ -96,6 +100,7 @@ button,
 input {
     outline: none;
 }
+
 input[type='search']::-webkit-search-cancel-button {
     -webkit-appearance: none;
 }

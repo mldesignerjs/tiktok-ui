@@ -1,44 +1,75 @@
 import PropTypes from 'prop-types'
+import { useCallback, useEffect, useState, useRef } from 'react'
 import classNames from 'classnames/bind'
+
 import styles from './Modal.module.scss'
-import { CloseModalIcon } from '../Icons'
-import Portal from '../Portal'
+import { CloseModalIcon } from '~/components/Icons'
+import Portal from '~/components/Portal'
+
 const cx = classNames.bind(styles)
 
-function Modal({ children, className, onCloseModal }) {
-    const handleClose = () => {
+function Modal({ children, className, onCloseModal, showModal, videoModal = false }) {
+    const [isClosing, setIsClosing] = useState(false)
+    const modalRef = useRef(null)
+
+    const handleClose = useCallback(() => {
         if (onCloseModal) {
-            onCloseModal()
+            if (modalRef.current) {
+                setIsClosing(true)
+                modalRef.current.addEventListener(
+                    'animationend',
+                    () => {
+                        setIsClosing(false)
+                        onCloseModal()
+                    },
+                    { ones: true },
+                )
+            }
         }
-    }
-    const classes = cx('modal', {
+        return null
+    }, [onCloseModal])
+
+    const classes = cx('modal-body', {
         [className]: className,
     })
 
+    useEffect(() => {
+        if (showModal) {
+            document.body.classList.add('hidden')
+        }
+        return () => {
+            if (showModal) {
+                document.body.classList.remove('hidden')
+            }
+        }
+    }, [showModal])
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.keyCode === 27) handleClose()
+        }
+        document.addEventListener('keydown', handleKeyDown)
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown)
+        }
+    }, [])
+
+    if (!showModal) return null
+
     return (
         <Portal>
-            <div className={classes} onClick={handleClose}>
-                {children}
+            <div ref={modalRef} className={cx('wrapper', { isClosing })} onClick={handleClose}>
+                <div className={cx('dialog')}>
+                    <div className={cx('content')} onClick={(e) => e.stopPropagation()}>
+                        <button className={cx(videoModal ? 'btn-close-video' : 'btn-close')} onClick={handleClose}>
+                            <CloseModalIcon className={cx('icon')} />
+                        </button>
+                        <div className={classes}>{children}</div>
+                    </div>
+                </div>
             </div>
         </Portal>
-    )
-}
-
-export function ModalContent({ onCloseModal, children }) {
-    const handleClose = () => {
-        if (onCloseModal) {
-            onCloseModal()
-        }
-    }
-    return (
-        <div className={cx('modal-dialog')}>
-            <div className={cx('modal-content')} onClick={(e) => e.stopPropagation()}>
-                <button className={cx('modal-close')} onClick={handleClose}>
-                    <CloseModalIcon />
-                </button>
-                <div className={cx('modal-body')}>{children}</div>
-            </div>
-        </div>
     )
 }
 
@@ -46,11 +77,8 @@ Modal.propTypes = {
     children: PropTypes.node.isRequired,
     className: PropTypes.string,
     onCloseModal: PropTypes.func.isRequired,
-}
-
-ModalContent.propTypes = {
-    children: PropTypes.node.isRequired,
-    onCloseModal: PropTypes.func.isRequired,
+    showModal: PropTypes.bool.isRequired,
+    videoModal: PropTypes.bool,
 }
 
 export default Modal

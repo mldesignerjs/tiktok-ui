@@ -1,0 +1,13 @@
+@use '../GlobalStyles/scss/' as *;
+
+.not-followed {
+}
+
+.followed {
+    color: $darkColor;
+    border-color: $borderColor;
+
+    &:hover {
+        background-color: rgba($color: $darkColor, $alpha: 0.03);
+    }
+}

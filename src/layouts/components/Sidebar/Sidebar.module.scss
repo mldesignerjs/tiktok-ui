@@ -28,6 +28,10 @@
     padding: 1.6rem 0;
     border-top: 1px solid rgba($color: $darkColor, $alpha: 0.12);
 
+    &.login {
+        padding: 1.6rem 8px;
+    }
+
     .alllinks {
         .links {
             display: flex;

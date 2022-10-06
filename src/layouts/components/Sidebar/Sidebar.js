@@ -21,6 +21,8 @@ import styles from './Sidebar.module.scss'
 import Menu from './Menu'
 import MenuItem from './Menu/MenuItem'
 import Accounts from './Accounts'
+import { useUserStore } from '~/redux'
+import { useLoginModal } from '~/hooks'
 
 const cx = classNames.bind(styles)
 
@@ -103,81 +105,88 @@ const listLink = [
 ]
 
 function Sidebar() {
-    const currentUser = true
+    const { currentUser } = useUserStore()
+
+    const { loginModal, setShowLoginModal } = useLoginModal()
 
     return (
-        <SimpleBar className={cx('simple')}>
-            <section className={cx('wrapper')}>
-                <div>
-                    <Menu>
-                        <MenuItem
-                            to={config.routes.home.path}
-                            icon={<HomeIconOutLine />}
-                            activeIcon={<HomeIconFill />}
-                            title={config.routes.home.title}
-                        />
-                        <MenuItem
-                            to={config.routes.following.path}
-                            icon={<FollowedUsersIconOutLine />}
-                            activeIcon={<FollowedUsersIconFill />}
-                            title={config.routes.following.title}
-                        />
-                        <MenuItem
-                            to={config.routes.live.path}
-                            icon={<LiveStreamIconOutLine />}
-                            activeIcon={<LiveStreamIconFill />}
-                            title={config.routes.live.title}
-                        />
-                    </Menu>
-                </div>
-                {!currentUser && (
+        <>
+            {loginModal}
+            <SimpleBar className={cx('simple')}>
+                <section className={cx('wrapper')}>
+                    <div>
+                        <Menu>
+                            <MenuItem
+                                to={config.routes.home.path}
+                                icon={<HomeIconOutLine />}
+                                activeIcon={<HomeIconFill />}
+                                title={config.routes.home.title}
+                            />
+                            <MenuItem
+                                to={config.routes.following.path}
+                                icon={<FollowedUsersIconOutLine />}
+                                activeIcon={<FollowedUsersIconFill />}
+                                title={config.routes.following.title}
+                            />
+                            <MenuItem
+                                to={config.routes.live.path}
+                                icon={<LiveStreamIconOutLine />}
+                                activeIcon={<LiveStreamIconFill />}
+                                title={config.routes.live.title}
+                            />
+                        </Menu>
+                    </div>
+                    {!currentUser && (
+                        <div className={cx('nav-user-container', 'login')}>
+                            <p className="nav-login-tip">
+                                Đăng nhập để follow các tác giả, thích video và xem bình luận.
+                            </p>
+                            <Button outline w100 onClick={() => setShowLoginModal(true)} className={cx('btn-login')}>
+                                {config.routes.login.title}
+                            </Button>
+                        </div>
+                    )}
+
+                    <Accounts label="Tài khoản được đề xuất" suggested={true} />
+
+                    {currentUser && <Accounts label="Các tài khoản đang follow" />}
+
                     <div className={cx('nav-user-container')}>
-                        <p className="nav-login-tip">Đăng nhập để follow các tác giả, thích video và xem bình luận.</p>
-                        <Button outline w100 to={config.routes.login.path} className={cx('btn-login')}>
-                            {config.routes.login.title}
-                        </Button>
-                    </div>
-                )}
-
-                <Accounts label="Tài khoản được đề xuất" suggested={true} />
-
-                {currentUser && <Accounts label="Các tài khoản đang follow" />}
-
-                <div className={cx('nav-user-container')}>
-                    <p className={cx('title')}>Khám phá</p>
-                    <ul className={cx('discover')}>
-                        {discover.map((item, index) => (
-                            <li key={index} className={cx('item')}>
-                                <Link to={`/${item.hasktag ? 'hasktag' : 'music'}/${item.path}`}>
-                                    {item.hasktag ? (
-                                        <HasktagIcon className={cx('icon')} />
-                                    ) : (
-                                        <MusicIcon className={cx('icon')} />
-                                    )}
-                                    <span>{item.text}</span>
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-                <div className={cx('nav-user-container')}>
-                    <div className={cx('alllinks')}>
-                        {listLink.map((list, index) => (
-                            <div key={index} className={cx('links')}>
-                                {list.map((item, index2) => (
-                                    <Link key={index2} to={item.path} className={cx('link')}>
-                                        {item.title}
+                        <p className={cx('title')}>Khám phá</p>
+                        <ul className={cx('discover')}>
+                            {discover.map((item, index) => (
+                                <li key={index} className={cx('item')}>
+                                    <Link to={`/${item.hasktag ? 'hasktag' : 'music'}/${item.path}`}>
+                                        {item.hasktag ? (
+                                            <HasktagIcon className={cx('icon')} />
+                                        ) : (
+                                            <MusicIcon className={cx('icon')} />
+                                        )}
+                                        <span>{item.text}</span>
                                     </Link>
-                                ))}
-                            </div>
-                        ))}
+                                </li>
+                            ))}
+                        </ul>
                     </div>
-                    <div className={cx('copyright')}>
-                        <p>© 2022 TikTok</p>
+                    <div className={cx('nav-user-container')}>
+                        <div className={cx('alllinks')}>
+                            {listLink.map((list, index) => (
+                                <div key={index} className={cx('links')}>
+                                    {list.map((item, index2) => (
+                                        <Link key={index2} to={item.path} className={cx('link')}>
+                                            {item.title}
+                                        </Link>
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
+                        <div className={cx('copyright')}>
+                            <p>© 2022 TikTok</p>
+                        </div>
                     </div>
-                </div>
-            </section>
-        </SimpleBar>
+                </section>
+            </SimpleBar>
+        </>
     )
 }
 

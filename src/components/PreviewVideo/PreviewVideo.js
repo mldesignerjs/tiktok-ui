@@ -1,16 +1,19 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames/bind'
 
 import styles from './PreviewVideo.module.scss'
-import Image from '~/components/Image'
+import { useVideoModal } from '~/hooks'
 import { PlayIconOutLine } from '~/components/Icons'
+import Image from '~/components/Image'
+import { useCurrentVideoPlayingStore } from '~/redux'
 
 const cx = classNames.bind(styles)
 
-function PreviewVideo({ video }) {
+function PreviewVideo({ data, indexVideo }) {
     const [isHover, setIsHover] = useState(false)
-    const [videoElement, setVideoElement] = useState(null)
+    const { videoModal, setShowVideoModal } = useVideoModal()
+    const { dispatch, currentVideoPlayingSlice } = useCurrentVideoPlayingStore()
 
     const itemRef = useRef(null)
     const videoRef = useRef(null)
@@ -23,36 +26,47 @@ function PreviewVideo({ video }) {
         setIsHover(false)
     }
 
-    useEffect(() => {
-        if (videoRef) setVideoElement(videoRef.current)
-    }, [])
+    const handleShowModal = () => {
+        setShowVideoModal(true)
+        dispatch(currentVideoPlayingSlice.actions.playInModal({ index: indexVideo }))
+    }
 
     return (
-        <div ref={itemRef} className={cx('item-container')} onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>
-            <div className={cx('preview')}>
-                <div className={cx('size-preview')}>
-                    <div className={cx('thumb')}>
-                        <Image src={video.thumb_url} />
-                        {isHover && (
-                            <video ref={videoRef} playsInline={true} autoPlay muted loop>
-                                <source src={video.file_url} type="video/mp4" />
-                            </video>
-                        )}
-                    </div>
-                    <div className={cx('views-counter')}>
-                        <PlayIconOutLine />
-                        <span>{video.views_count}</span>
+        <>
+            {videoModal}
+            <div
+                ref={itemRef}
+                className={cx('item-container')}
+                onMouseOver={handleMouseOver}
+                onMouseOut={handleMouseOut}
+                onClick={handleShowModal}
+                id={`video-${data.id}`}
+            >
+                <div className={cx('preview')}>
+                    <div className={cx('size-preview')}>
+                        <div className={cx('thumb')}>
+                            <Image src={data.thumb_url} />
+                            {isHover && (
+                                <video ref={videoRef} playsInline={true} autoPlay muted loop>
+                                    <source src={data.file_url} type="video/mp4" />
+                                </video>
+                            )}
+                        </div>
+                        <div className={cx('views-counter')}>
+                            <PlayIconOutLine />
+                            <span>{data.views_count}</span>
+                        </div>
                     </div>
                 </div>
+                <div className={cx('caption-line')} title={data.description}>
+                    {data.description}
+                </div>
             </div>
-            <div className={cx('caption-line')} title={video.description}>
-                {video.description}
-            </div>
-        </div>
+        </>
     )
 }
 
 PreviewVideo.propTypes = {
-    video: PropTypes.object.isRequired,
+    data: PropTypes.object.isRequired,
 }
 export default PreviewVideo

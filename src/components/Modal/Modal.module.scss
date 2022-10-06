@@ -1,6 +1,6 @@
 @use '../GlobalStyles/scss/' as *;
 
-.modal {
+.wrapper {
     position: fixed;
     top: 0;
     left: 0;
@@ -8,9 +8,16 @@
     width: 100vw;
     height: 100vh;
     z-index: 10000;
-    transition: 0.3s ease;
+    animation: fadeIn 0.3s forwards;
 
-    &-dialog {
+    &.isClosing {
+        animation: fadeOut 0.3s forwards;
+        .content {
+            animation: scaleDown 0.3s forwards;
+        }
+    }
+
+    .dialog {
         margin: auto;
         min-width: 500px;
         position: absolute;
@@ -19,20 +26,20 @@
         transform: translate(-50%, -50%);
     }
 
-    &-content {
+    .content {
         width: 100%;
-        padding: 40px 32px 32px;
+        padding: 0;
         position: relative;
         background-color: $whiteColor;
-        transition: 0.3s ease;
         border-radius: 4px;
+        animation: scaleUp 0.3s forwards;
     }
 
-    &-body {
+    .body {
         width: 100%;
     }
 
-    &-close {
+    .btn-close {
         position: absolute;
         font-size: 2rem;
         top: 16px;
@@ -41,5 +48,61 @@
         height: 24px;
         background-color: transparent;
         border: none;
+        z-index: 2;
+
+        &-video {
+            position: absolute;
+            font-size: 2rem;
+            font-weight: 700;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: rgba($color: $whiteColor, $alpha: 0.1);
+            color: $whiteColor;
+            @include flex(center, center);
+            border: none;
+            border-radius: 50%;
+            z-index: 2;
+
+            .icon {
+            }
+        }
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleUp {
+    from {
+        transform: scale(0.8);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes scaleDown {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(0.3);
     }
 }

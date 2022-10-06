@@ -9,17 +9,30 @@ import { TickAccountIcon } from '~/components/Icons'
 import AccountItem from './AccountItem'
 import styles from './Accounts.module.scss'
 import Avatar from '~/components/Avatar'
+import { useLoginModal } from '~/hooks'
+import { useUserStore } from '~/redux'
 
 const cx = classNames.bind(styles)
 
 function SuggestedAccountItem({ data }) {
+    const { loginModal, setShowLoginModal } = useLoginModal()
+    const { currentUser } = useUserStore()
+
+    const handleFollow = (nickname) => {
+        if (currentUser) {
+            console.log(`Đã follow ${nickname}`)
+        } else {
+            setShowLoginModal(true)
+        }
+    }
+
     const boxRender = (attrs) => (
         <div className={cx('wrapper-box')} tabIndex="-1" {...attrs}>
             <div className={cx('box-header')}>
                 <Link to={`/@${data.nickname}`}>
                     <Avatar src={data.avatar} alt={data.nickname} size={44} />
                 </Link>
-                <Button primary className={cx('btn-follow')}>
+                <Button primary className={cx('btn-follow')} onClick={() => handleFollow(data.nickname)}>
                     Follow
                 </Button>
             </div>
@@ -41,19 +54,22 @@ function SuggestedAccountItem({ data }) {
         </div>
     )
     return (
-        <div>
-            <Tippy
-                placement="bottom"
-                interactive
-                offset={[-20, 0]}
-                hideOnClick={false}
-                delay={[200, 200]}
-                render={boxRender}
-                // onHide={handleResetToFirstPage}
-            >
-                <AccountItem data={data} />
-            </Tippy>
-        </div>
+        <>
+            {loginModal}
+            <div>
+                <Tippy
+                    placement="bottom"
+                    interactive
+                    offset={[-20, 0]}
+                    hideOnClick={false}
+                    delay={[200, 200]}
+                    render={boxRender}
+                    // onHide={handleResetToFirstPage}
+                >
+                    <AccountItem data={data} />
+                </Tippy>
+            </div>
+        </>
     )
 }
 

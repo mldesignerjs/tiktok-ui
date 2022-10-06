@@ -2,11 +2,6 @@ import { useState } from 'react'
 
 import { Link } from 'react-router-dom'
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRightToBracket } from '@fortawesome/free-solid-svg-icons'
-
-import { useTransition, animated } from 'react-spring'
-
 import Tippy from '@tippyjs/react'
 import 'tippy.js/dist/tippy.css'
 import classNames from 'classnames/bind'
@@ -15,7 +10,7 @@ import config from '~/config'
 import images from '~/assets/images'
 import Button from '~/components/Button'
 import Menu from '~/components/Popper/Menu'
-import Modal, { ModalContent } from '~/components/Modal'
+import Modal from '~/components/Modal'
 
 import {
     CoinIcon,
@@ -27,6 +22,7 @@ import {
     LKeyIcon,
     MessageIcon,
     MKeyIcon,
+    PlusIcon,
     SeeMoreIcon,
     SettingIcon,
     SignOutIcon,
@@ -35,9 +31,11 @@ import {
     UserIcon,
 } from '~/components/Icons'
 
+import { useUserStore } from '~/redux'
 import Avatar from '~/components/Avatar'
 import styles from './Header.module.scss'
 import Search from '../Search'
+import { useLoginModal } from '~/hooks'
 
 const cx = classNames.bind(styles)
 
@@ -94,9 +92,11 @@ const keyboardShotcuts = [
 ]
 
 function Header() {
-    const [showModal, setShowModal] = useState(false)
+    const [showKeyboardShotcutModal, setShowKeyboardShotcutModal] = useState(false)
 
-    const currentUser = false
+    const { currentUser } = useUserStore()
+
+    const { loginModal, setShowLoginModal } = useLoginModal()
 
     const handleMenuChange = (menuItem) => {
         switch (menuItem.type) {
@@ -107,7 +107,7 @@ function Header() {
                 console.log('Chuyen Link')
                 break
             case 'modal':
-                setShowModal(true)
+                setShowKeyboardShotcutModal(true)
                 break
 
             default:
@@ -144,38 +144,26 @@ function Header() {
         },
     ]
 
-    const transitions = useTransition(showModal, {
-        from: { opacity: 0 },
-        enter: { opacity: 1 },
-        leave: { opacity: 0 },
-        delay: 200,
-        config: {
-            duration: 200,
-        },
-    })
-
     return (
         <>
-            {transitions(
-                (styles, item) =>
-                    item && (
-                        <Modal className={cx('shotcut')} onCloseModal={() => setShowModal(false)}>
-                            <animated.div style={styles}>
-                                <ModalContent onCloseModal={() => setShowModal(false)}>
-                                    <h2 className={cx('shotcut-title')}>Phím tắt trên bàn phím</h2>
-                                    <ul className={cx('shotcut-content')}>
-                                        {keyboardShotcuts.map((shotcut, index) => (
-                                            <li className={cx('shotcut-item')} key={index}>
-                                                <span>{shotcut.title}</span>
-                                                <span className={cx('icon')}>{shotcut.key}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </ModalContent>
-                            </animated.div>
-                        </Modal>
-                    ),
-            )}
+            <Modal
+                className={cx('shotcut')}
+                onCloseModal={() => setShowKeyboardShotcutModal(false)}
+                showModal={showKeyboardShotcutModal}
+            >
+                <h2 className={cx('shotcut-title')}>Phím tắt trên bàn phím</h2>
+                <ul className={cx('shotcut-content')}>
+                    {keyboardShotcuts.map((shotcut, index) => (
+                        <li className={cx('shotcut-item')} key={index}>
+                            <span>{shotcut.title}</span>
+                            <span className={cx('icon')}>{shotcut.key}</span>
+                        </li>
+                    ))}
+                </ul>
+            </Modal>
+
+            {loginModal}
+
             <header className={cx('header')}>
                 <div className={cx('wrapper', 'container')}>
                     <div className={cx('logo')}>
@@ -208,15 +196,16 @@ function Header() {
                             </>
                         ) : (
                             <>
-                                <Link to={config.routes.upload.path} className={cx('link-upload')}>
-                                    Tải lên
-                                </Link>
-
                                 <Button
-                                    primary
-                                    to={config.routes.login.path}
-                                    leftIcon={<FontAwesomeIcon icon={faRightToBracket} />}
+                                    outline
+                                    to={config.routes.upload.path}
+                                    leftIcon={<PlusIcon />}
+                                    className={cx('link-upload')}
                                 >
+                                    Tải lên
+                                </Button>
+
+                                <Button primary onClick={() => setShowLoginModal(true)}>
                                     {config.routes.login.title}
                                 </Button>
                             </>

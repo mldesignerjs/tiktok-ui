@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 import classNames from 'classnames/bind'
 
 import styles from './SearchedAccountItem.module.scss'
-import { TickAccountIcon } from '../Icons'
-import Avatar from '../Avatar'
+import { TickAccountIcon } from '~/components/Icons'
+import Avatar from '~/components/Avatar'
 
 const cx = classNames.bind(styles)
 function SearchedAccountItem({ data }) {

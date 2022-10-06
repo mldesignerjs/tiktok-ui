@@ -2,15 +2,14 @@ import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames/bind'
 import styles from './RangeVolumeSlider.module.scss'
-import { useVolumeStore } from '~/context'
 import { VolumeIcon, VolumeOffIcon } from '~/components/Icons'
+import { useVolumeStore } from '~/redux'
 
 const cx = classNames.bind(styles)
 
 function RangeVolumeSlider({ onValueChange, onMuted }) {
-    const [state] = useVolumeStore()
-
-    const { muted, volume } = state
+    const { stateVolumeStore } = useVolumeStore()
+    const { volume, muted } = stateVolumeStore
 
     const [marginLeft, setMarginLeft] = useState(volume)
 
